@@ -18,6 +18,16 @@ const articles = [
     image: "/tech-woman-article.jpg",
   },
   {
+    title: "Lory Hesdrie Doamba : Intelligence Artificielle & Afrique",
+    description:
+      "Portrait de Lory Hesdrie Doamba, pionnière de l'intelligence artificielle en Afrique, publié par Elle Gagne — média dédié aux femmes qui réussissent.",
+    date: "2025",
+    url: "https://ellegagne.com/lory-hesdrie-doamba-intelligence-artificielle-afrique/",
+    type: "about" as const,
+    publication: "Elle Gagne",
+    image: "/placeholder.svg",
+  },
+  {
     title: "Comment démocratiser l'accès à la technologie",
     description:
       "Mon approche pour rendre la technologie accessible à tous, en particulier aux jeunes et aux femmes en Afrique.",

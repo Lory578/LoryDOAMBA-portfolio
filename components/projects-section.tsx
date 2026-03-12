@@ -29,6 +29,12 @@ const projects = [
     tags: ["Strategy", "Content", "Analytics"],
     period: "Ongoing- En cours",
   },
+  {
+    title: "ERP simplifié pour la couture — SaaS mobile Android",
+    description: "Développement d'un ERP simplifié dédié au métier de la couture, sous forme de SaaS mobile Android. Déjà adopté par Warma Couture depuis janvier 2026, bientôt disponible sur le Play Store.",
+    tags: ["React Native", "Android", "SaaS", "ERP", "Play Store"],
+    period: "2026 — En cours",
+  },
 ]
 
 const achievements = [
