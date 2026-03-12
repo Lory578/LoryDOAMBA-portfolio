@@ -25,22 +25,22 @@ const socialLinks = [
   {
     icon: Music2,
     label: "TikTok",
-    href: "#",
+    href: "https://www.tiktok.com/@miss_easytech?_r=1&_t=ZM-92IlIEeCoOK",
   },
   {
     icon: Youtube,
     label: "YouTube",
-    href: "#",
+    href: "https://www.youtube.com/@MissEasyTech",
   },
   {
     icon: Linkedin,
     label: "LinkedIn",
-    href: "#",
+    href: "http://linkedin.com/in/lory-doamba-miss-easytech-ab567b277",
   },
   {
     icon: Facebook,
     label: "Facebook",
-    href: "#",
+    href: "https://www.facebook.com/share/17QuKGT1Zi/?mibextid=wwXIfr",
   },
 ]
 
