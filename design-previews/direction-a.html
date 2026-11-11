@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Direction A — Sculptural | Lory Doamba</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --creme: #F6EFE6;
+      --creme-deep: #EDE2D4;
+      --terre: #3A2A22;
+      --terre-soft: #5C4336;
+      --terracotta: #C25A3A;
+      --terracotta-soft: #D47858;
+      --magenta: #D61A6A;
+      --magenta-deep: #A81252;
+      --ink: #2A1C16;
+      --ink-muted: #6E564A;
+      --surface: rgba(246, 239, 230, 0.72);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Outfit", system-ui, sans-serif;
+      background: var(--creme);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    .label {
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--magenta);
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 1.5rem;
+      backdrop-filter: blur(14px);
+      background: rgba(246, 239, 230, 0.7);
+      border-bottom: 1px solid rgba(58, 42, 34, 0.08);
+    }
+    .nav-brand {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--terre);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: none;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--ink-muted);
+      font-size: 0.9rem;
+      font-weight: 400;
+    }
+    .nav-cta {
+      background: var(--magenta);
+      color: white;
+      border: none;
+      border-radius: 999px;
+      padding: 0.65rem 1.15rem;
+      font: inherit;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    @media (min-width: 900px) {
+      .nav { padding: 1.25rem 3rem; }
+      .nav-links { display: flex; }
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: grid;
+      align-items: end;
+      padding: 6.5rem 1.5rem 3rem;
+      isolation: isolate;
+    }
+    #sculpt-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    .hero-veil {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse 55% 50% at 75% 40%, rgba(214, 26, 106, 0.18), transparent 60%),
+        radial-gradient(ellipse 40% 45% at 20% 70%, rgba(194, 90, 58, 0.22), transparent 55%),
+        linear-gradient(180deg, rgba(246, 239, 230, 0.15) 0%, rgba(246, 239, 230, 0.85) 78%, var(--creme) 100%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 2rem;
+    }
+    .hero-copy { max-width: 34rem; }
+    .hero-kicker { margin-bottom: 1rem; }
+    .hero h1 {
+      font-family: "Cormorant Garamond", serif;
+      font-weight: 600;
+      font-size: clamp(3.4rem, 10vw, 6.8rem);
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      color: var(--terre);
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--magenta);
+      font-weight: 500;
+    }
+    .hero-lead {
+      font-size: clamp(1rem, 2.2vw, 1.15rem);
+      line-height: 1.65;
+      color: var(--ink-muted);
+      font-weight: 300;
+      margin-bottom: 1.5rem;
+      max-width: 32rem;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+    .photo-slot {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--magenta);
+      box-shadow: 0 10px 30px rgba(58, 42, 34, 0.18);
+      flex-shrink: 0;
+      background: var(--creme-deep);
+      position: relative;
+    }
+    .photo-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-slot .fallback {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 0.55rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 0.4rem;
+      color: var(--ink-muted);
+      background: var(--creme-deep);
+    }
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+    .badge {
+      font-size: 0.72rem;
+      padding: 0.4rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(214, 26, 106, 0.35);
+      color: var(--terre-soft);
+      background: rgba(255, 255, 255, 0.45);
+    }
+    .badge.strong {
+      background: var(--magenta);
+      border-color: var(--magenta);
+      color: white;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.9rem 1.35rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: transform 0.25s ease, background 0.25s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: var(--magenta);
+      color: white;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--terre);
+      border: 1.5px solid rgba(58, 42, 34, 0.28);
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.85rem;
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(58, 42, 34, 0.12);
+    }
+    .stat strong {
+      display: block;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.85rem;
+      color: var(--terracotta);
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+    .stat span {
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      line-height: 1.4;
+    }
+    @media (min-width: 700px) {
+      .stats { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    }
+    @media (min-width: 960px) {
+      .hero {
+        align-items: center;
+        padding: 7rem 3rem 4rem;
+      }
+      .hero-inner {
+        grid-template-columns: 1.05fr 0.95fr;
+        align-items: end;
+        min-height: calc(100svh - 11rem);
+      }
+      .hero-stage {
+        min-height: 420px;
+        pointer-events: none;
+      }
+    }
+
+    /* ABOUT */
+    .about {
+      padding: 4.5rem 1.5rem 5.5rem;
+      background:
+        linear-gradient(180deg, var(--creme) 0%, var(--creme-deep) 100%);
+    }
+    .about-inner {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 2.5rem;
+    }
+    .about-card {
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(58, 42, 34, 0.08);
+      border-radius: 28px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 24px 60px rgba(58, 42, 34, 0.06);
+    }
+    .about h2 {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 600;
+      color: var(--terre);
+      margin: 0.6rem 0 1.25rem;
+      line-height: 1.05;
+    }
+    .about p {
+      font-size: 1.02rem;
+      line-height: 1.75;
+      color: var(--ink-muted);
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+    .quote {
+      margin-top: 1.75rem;
+      padding: 1.5rem 0 0;
+      border-top: 1px solid rgba(214, 26, 106, 0.25);
+      font-family: "Cormorant Garamond", serif;
+      font-style: italic;
+      font-size: clamp(1.35rem, 3vw, 1.85rem);
+      line-height: 1.35;
+      color: var(--terre);
+    }
+    .quote span {
+      display: block;
+      margin-top: 0.85rem;
+      font-family: "Outfit", sans-serif;
+      font-style: normal;
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--magenta);
+    }
+    .pillars {
+      display: grid;
+      gap: 1rem;
+    }
+    .pillar {
+      padding: 1.35rem 1.25rem;
+      border-radius: 22px;
+      background: var(--terre);
+      color: var(--creme);
+      position: relative;
+      overflow: hidden;
+    }
+    .pillar::after {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      right: -30px;
+      top: -30px;
+      background: radial-gradient(circle, rgba(214, 26, 106, 0.45), transparent 70%);
+    }
+    .pillar h3 {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      margin-bottom: 0.45rem;
+      position: relative;
+    }
+    .pillar p {
+      color: rgba(246, 239, 230, 0.78);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      margin: 0;
+      position: relative;
+    }
+    .pillar.alt { background: var(--terracotta); }
+    .pillar.accent { background: var(--magenta-deep); }
+    @media (min-width: 900px) {
+      .about { padding: 6rem 3rem 7rem; }
+      .about-inner { grid-template-columns: 1.2fr 0.8fr; align-items: start; }
+      .about-card { padding: 2.75rem; }
+    }
+
+    .preview-tag {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 50;
+      background: var(--terre);
+      color: var(--creme);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.55rem 0.8rem;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-tag">Direction A · Sculptural</div>
+
+  <nav class="nav" aria-label="Principale">
+    <a class="nav-brand" href="#">Lory Doamba</a>
+    <ul class="nav-links">
+      <li><a href="#about">À propos</a></li>
+      <li><a href="#">Expertise</a></li>
+      <li><a href="#">Impact</a></li>
+      <li><a href="#">Projets</a></li>
+      <li><a href="#">Blog</a></li>
+    </ul>
+    <a class="nav-cta" href="#">Me contacter</a>
+  </nav>
+
+  <header class="hero">
+    <canvas id="sculpt-canvas" aria-hidden="true"></canvas>
+    <div class="hero-veil"></div>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="label hero-kicker">Ingénieure Data &amp; IA · Formatrice Tech</p>
+        <h1>Lory <em>Doamba</em></h1>
+        <p class="hero-lead">
+          Je conçois des produits web, mobiles et IA fiables, et je forme celles et ceux qui bâtiront la tech africaine de demain.
+        </p>
+        <div class="hero-meta">
+          <div class="photo-slot" aria-label="Emplacement photo">
+            <img src="../public/images/profile.png" alt="Portrait de Lory Doamba" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';" />
+            <div class="fallback" style="display:none">Photo<br />à placer</div>
+          </div>
+          <div class="badges">
+            <span class="badge strong">Lead TOW &amp; Geeks Out</span>
+            <span class="badge">Féministe radicale</span>
+            <span class="badge">Développement des femmes</span>
+          </div>
+        </div>
+        <div class="actions">
+          <a class="btn btn-primary" href="#">Voir mes projets</a>
+          <a class="btn btn-ghost" href="#">Télécharger mon CV</a>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <strong>2 000+</strong>
+            <span>membres dans la communauté TOW</span>
+          </div>
+          <div class="stat">
+            <strong>1 édition</strong>
+            <span>Geeks Out Burkina · 30 mai 2026</span>
+          </div>
+          <div class="stat">
+            <strong>IA</strong>
+            <span>RAG, agents IA, LLMs</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-stage" aria-hidden="true"></div>
+    </div>
+  </header>
+
+  <section class="about" id="about">
+    <div class="about-inner">
+      <article class="about-card">
+        <p class="label">À propos</p>
+        <h2>Expertise technique, leadership communautaire, conviction assumée.</h2>
+        <p>
+          Je suis ingénieure Data &amp; IA, basée à Ouagadougou. Je combine génie logiciel, données et intelligence artificielle pour créer des solutions évolutives, orientées production et centrées sur les utilisateurs. LLMs, RAG, agents IA et automatisation intelligente sont au cœur de mon travail.
+        </p>
+        <p>
+          Je suis aussi formatrice, fondatrice de Tech Opportunities Worldwide et de Geeks Out.
+        </p>
+        <p>
+          Je suis féministe radicale : je crois que la technologie ne changera rien si les femmes n'y ont pas la place, la formation et le pouvoir de décision. Chaque communauté que je construis part de cette conviction.
+        </p>
+        <blockquote class="quote">
+          « La technologie n'a de sens que si elle ouvre des portes à celles qui en étaient exclues. »
+          <span>Citation</span>
+        </blockquote>
+      </article>
+      <div class="pillars">
+        <div class="pillar">
+          <h3>IA &amp; Data</h3>
+          <p>LLMs, RAG, systèmes multi-agents, LangGraph, Python, FastAPI.</p>
+        </div>
+        <div class="pillar alt">
+          <h3>TOW &amp; Geeks Out</h3>
+          <p>Communauté 2 000+ membres · événement tech à Ouagadougou.</p>
+        </div>
+        <div class="pillar accent">
+          <h3>Formation</h3>
+          <p>Ateliers IA, accompagnement de jeunes et de femmes vers la tech.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
+  <script type="module">
+    import * as THREE from "three";
+
+    const canvas = document.getElementById("sculpt-canvas");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+    camera.position.set(0.2, 0.15, 5.2);
+
+    const light1 = new THREE.DirectionalLight(0xffd2c2, 1.4);
+    light1.position.set(3, 4, 5);
+    scene.add(light1);
+    const light2 = new THREE.DirectionalLight(0xd61a6a, 0.85);
+    light2.position.set(-4, -1, 2);
+    scene.add(light2);
+    scene.add(new THREE.AmbientLight(0xf6efe6, 0.55));
+
+    const materials = [
+      new THREE.MeshStandardMaterial({ color: 0xc25a3a, metalness: 0.25, roughness: 0.35, transparent: true, opacity: 0.92 }),
+      new THREE.MeshStandardMaterial({ color: 0xd61a6a, metalness: 0.4, roughness: 0.25, transparent: true, opacity: 0.88 }),
+      new THREE.MeshStandardMaterial({ color: 0xe8d5c4, metalness: 0.1, roughness: 0.55, transparent: true, opacity: 0.75 }),
+      new THREE.MeshStandardMaterial({ color: 0x5c4336, metalness: 0.2, roughness: 0.45, transparent: true, opacity: 0.85 }),
+    ];
+
+    const forms = [
+      { geo: new THREE.TorusKnotGeometry(0.55, 0.18, 140, 18), pos: [1.5, 0.35, 0], scale: 1.15 },
+      { geo: new THREE.IcosahedronGeometry(0.55, 0), pos: [2.4, -0.7, -0.6], scale: 1 },
+      { geo: new THREE.TorusGeometry(0.42, 0.12, 24, 64), pos: [0.7, -0.9, 0.4], scale: 1 },
+      { geo: new THREE.OctahedronGeometry(0.42), pos: [2.8, 0.85, -0.3], scale: 1 },
+      { geo: new THREE.SphereGeometry(0.28, 32, 32), pos: [1.1, 1.1, -0.8], scale: 1 },
+    ];
+
+    const meshes = forms.map((f, i) => {
+      const mesh = new THREE.Mesh(f.geo, materials[i % materials.length]);
+      mesh.position.set(...f.pos);
+      mesh.scale.setScalar(f.scale);
+      scene.add(mesh);
+      return mesh;
+    });
+
+    function resize() {
+      const { clientWidth: w, clientHeight: h } = canvas.parentElement;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      const mobile = w < 900;
+      camera.position.x = mobile ? 0 : 0.35;
+      meshes.forEach((m, i) => {
+        m.visible = !(mobile && i > 2);
+        if (mobile) m.position.x = forms[i].pos[0] - 1.35;
+        else m.position.x = forms[i].pos[0];
+      });
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    let t = 0;
+    let mx = 0, my = 0;
+    window.addEventListener("pointermove", (e) => {
+      mx = (e.clientX / window.innerWidth - 0.5) * 0.4;
+      my = (e.clientY / window.innerHeight - 0.5) * 0.25;
+    });
+
+    function tick() {
+      t += reduce ? 0 : 0.008;
+      meshes.forEach((m, i) => {
+        m.rotation.x = t * (0.35 + i * 0.05) + i;
+        m.rotation.y = t * (0.45 + i * 0.04);
+        m.position.y = forms[i].pos[1] + Math.sin(t * 1.2 + i) * 0.12;
+      });
+      camera.position.x += (0.35 + mx - camera.position.x) * 0.04;
+      camera.position.y += (0.15 - my - camera.position.y) * 0.04;
+      camera.lookAt(1.4, 0.1, 0);
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    tick();
+  </script>
+</body>
+</html>

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Calendar, Clock, Tag, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-provider"
+import Image from "next/image"
 
 interface BlogPost {
   id: string
@@ -34,7 +35,7 @@ const blogPosts: BlogPost[] = [
     date: "15 Déc 2024",
     readTime: "5 min",
     tags: ["Tech", "Parcours", "Inspiration"],
-    image: "/woman-coding-laptop.jpg",
+    image: "/placeholder.svg",
   },
   {
     id: "2",
@@ -47,7 +48,7 @@ const blogPosts: BlogPost[] = [
     date: "10 Déc 2024",
     readTime: "7 min",
     tags: ["Mentorat", "Communauté", "Afrique"],
-    image: "/mentorship-tech-africa.jpg",
+    image: "/placeholder.svg",
   },
   {
     id: "3",
@@ -60,7 +61,7 @@ const blogPosts: BlogPost[] = [
     date: "5 Déc 2024",
     readTime: "4 min",
     tags: ["Outils", "Développement", "Productivité"],
-    image: "/developer-tools-workspace.jpg",
+    image: "/placeholder.svg",
   },
 ]
 
@@ -71,20 +72,23 @@ export default function BlogPage() {
 
   if (selectedPost) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="min-h-screen bg-background">
         <Navigation />
-        <main className="pt-24 pb-20">
+        <main className="section-shell pt-32">
           <article className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
-            <Button variant="ghost" onClick={() => setSelectedPost(null)} className="mb-8 hover:bg-primary/10 group">
+            <Button variant="ghost" onClick={() => setSelectedPost(null)} className="mb-8 rounded-full border border-border hover:bg-primary/10 group">
               <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
               {isFr ? "Retour au blog" : "Back to blog"}
             </Button>
 
             <div className="aspect-[2/1] rounded-2xl overflow-hidden mb-8 shadow-2xl">
-              <img
+              <Image
                 src={selectedPost.image || "/placeholder.svg"}
                 alt={isFr ? selectedPost.title : selectedPost.titleEn}
                 className="w-full h-full object-cover"
+                width={1200}
+                height={600}
+                unoptimized
               />
             </div>
 
@@ -99,7 +103,7 @@ export default function BlogPage() {
               </div>
             </div>
 
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-secondary mb-6 leading-tight">
+            <h1 className="section-title mb-8 leading-tight">
               {isFr ? selectedPost.title : selectedPost.titleEn}
             </h1>
 
@@ -126,9 +130,9 @@ export default function BlogPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen bg-background">
       <Navigation />
-      <main className="pt-24 pb-20">
+      <main className="section-shell pt-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mb-16 animate-fade-in-up">
             <Link href="/">
@@ -137,7 +141,8 @@ export default function BlogPage() {
                 {isFr ? "Retour à l'accueil" : "Back to home"}
               </Button>
             </Link>
-            <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-bold text-secondary mb-6">
+            <p className="section-kicker">Journal / Lory Doamba</p>
+            <h1 className="section-title mb-6">
               {isFr ? "Mon Blog" : "My Blog"}
             </h1>
             <p className="text-xl text-foreground/70 leading-relaxed">
@@ -151,15 +156,18 @@ export default function BlogPage() {
             {blogPosts.map((post, index) => (
               <Card
                 key={post.id}
-                className="bg-card/80 backdrop-blur-sm border-border overflow-hidden hover:border-primary/50 transition-all duration-500 group hover:scale-105 hover:shadow-2xl cursor-pointer animate-fade-in-up"
+                className="editorial-card cursor-pointer animate-fade-in-up"
                 style={{ animationDelay: `${index * 100}ms` }}
                 onClick={() => setSelectedPost(post)}
               >
                 <div className="aspect-video overflow-hidden relative">
-                  <img
+                  <Image
                     src={post.image || "/placeholder.svg"}
                     alt={isFr ? post.title : post.titleEn}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    width={800}
+                    height={450}
+                    unoptimized
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
@@ -207,7 +215,7 @@ export default function BlogPage() {
                 : "Feel free to contact me to discuss projects, collaborations or simply chat about tech."}
             </p>
             <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-white">
-              <a href="mailto:laurelnekomba@gmail.com">{isFr ? "Me contacter" : "Contact me"}</a>
+              <a href="mailto:lorydoamba02@gmail.com">{isFr ? "Me contacter" : "Contact me"}</a>
             </Button>
           </Card>
         </div>

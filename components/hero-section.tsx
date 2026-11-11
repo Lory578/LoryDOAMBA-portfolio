@@ -1,101 +1,99 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { ArrowDown } from "lucide-react"
+import dynamic from "next/dynamic"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/lib/language-provider"
 
-export function HeroSection() {
-  const [isVisible, setIsVisible] = useState(false)
-  const { t } = useLanguage()
+const HeroSculpt = dynamic(
+  () => import("@/components/hero-sculpt").then((m) => m.HeroSculpt),
+  { ssr: false },
+)
 
-  useEffect(() => {
-    setIsVisible(true)
-  }, [])
+export function HeroSection() {
+  const { t } = useLanguage()
+  const [firstName, ...rest] = t.hero.title.split(" ")
+  const lastName = rest.join(" ")
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background">
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float" />
-          <div
-            className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-float"
-            style={{ animationDelay: "2s" }}
-          />
-        </div>
-      </div>
+    <section className="relative isolate flex min-h-[100svh] items-end overflow-hidden bg-[var(--creme)] pt-24 md:items-center">
+      <HeroSculpt />
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_78%_35%,rgba(201,22,106,0.16),transparent_60%),radial-gradient(ellipse_40%_40%_at_15%_75%,rgba(184,75,50,0.14),transparent_55%),linear-gradient(180deg,rgba(250,244,236,0.2)_0%,rgba(250,244,236,0.75)_72%,var(--creme)_100%)]"
+        aria-hidden="true"
+      />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Text Content */}
-          <div
-            className={`space-y-6 transition-all duration-1000 ${
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
-          >
-            <div className="space-y-2">
-              <p className="text-accent text-sm md:text-base font-medium uppercase tracking-wider animate-slide-in-left">
-                {t.hero.tagline}
-              </p>
-              <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-secondary leading-tight text-balance animate-scale-in">
-                {t.hero.title}
-              </h1>
-            </div>
-
-            <p
-              className="text-lg md:text-xl text-foreground/70 leading-relaxed max-w-2xl text-pretty animate-fade-in-up"
-              style={{ animationDelay: "0.3s" }}
-            >
-              {t.hero.description} <span className="text-secondary font-semibold">{t.hero.descriptionHighlight}</span>{" "}
-              {t.hero.descriptionEnd}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
-              <Button
-                asChild
-                size="lg"
-                className="bg-primary hover:bg-primary/90 text-white hover:scale-105 transition-transform"
-              >
-                <a href="#projects">{t.hero.viewProjects}</a>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="border-secondary text-secondary hover:bg-secondary hover:text-background bg-transparent hover:scale-105 transition-transform"
-              >
-                <a href="#contact">{t.hero.contactMe}</a>
-              </Button>
-            </div>
-          </div>
-
-          {/* Profile Image */}
-          <div
-            className={`relative transition-all duration-1000 delay-300 ${
-              isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
-            }`}
-          >
-            <div className="relative aspect-square max-w-lg mx-auto">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-3xl transform rotate-6 animate-pulse-glow" />
-              <div className="relative rounded-3xl overflow-hidden border-2 border-primary/20 hover:scale-105 transition-transform duration-500">
+      <div className="relative z-10 mx-auto w-full max-w-[1240px] px-5 pb-12 pt-6 sm:px-8 lg:px-12 lg:pb-16">
+        <div className="grid items-end gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:gap-8">
+          <div className="max-w-2xl">
+            <div className="mb-5 flex items-center gap-3">
+              <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-[40%_40%_36%_36%/28%_28%_48%_48%] border-[1.5px] border-primary shadow-[8px_10px_0_rgba(201,22,106,0.15)] sm:h-20 sm:w-16">
                 <Image
                   src="/images/profile.png"
-                  alt="Miss EasyTech - Lory Doamba"
-                  width={600}
-                  height={600}
-                  className="object-cover w-full h-full"
+                  alt="Portrait de Lory Doamba"
+                  fill
+                  className="object-cover"
+                  sizes="64px"
                   priority
                 />
               </div>
+              <p className="text-[0.72rem] font-semibold uppercase leading-relaxed tracking-[0.2em] text-primary">
+                {t.hero.tagline}
+              </p>
+            </div>
+
+            <h1 className="font-serif text-[clamp(3.4rem,12vw,7.8rem)] font-semibold leading-[0.9] tracking-[-0.035em] text-secondary">
+              {firstName}
+              <br />
+              <em className="font-medium not-italic text-primary sm:italic">{lastName || firstName}</em>
+            </h1>
+
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+              {t.hero.description}
+            </p>
+          </div>
+
+          <div className="space-y-5 lg:justify-self-end lg:pb-2">
+            <div className="flex flex-wrap gap-2">
+              {t.hero.badges.map((badge, i) => (
+                <span
+                  key={badge}
+                  className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
+                    i === 0
+                      ? "bg-primary text-white"
+                      : "border border-primary/30 bg-[var(--paper)]/70 text-[var(--terre-soft)]"
+                  }`}
+                >
+                  {badge}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <a href="#projects" className="btn-muse btn-muse-fill">
+                {t.hero.viewProjects}
+              </a>
+              <a href="#contact" className="btn-muse btn-muse-line">
+                {t.hero.contactMe}
+              </a>
+            </div>
+
+            <div className="grid gap-4 border-t border-[var(--line)] pt-5 sm:grid-cols-3">
+              {t.hero.stats.map((stat) => {
+                const [strong, ...restParts] = stat.split(" · ")
+                return (
+                  <div key={stat}>
+                    <strong className="block font-serif text-2xl leading-none text-accent">{strong}</strong>
+                    {restParts.length > 0 && (
+                      <span className="mt-1 block text-xs leading-snug text-muted-foreground">
+                        {restParts.join(" · ")}
+                      </span>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <ArrowDown className="w-6 h-6 text-secondary" />
       </div>
     </section>
   )

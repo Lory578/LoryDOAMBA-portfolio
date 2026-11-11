@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Direction B — Playground | Lory Doamba</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --creme: #F3E9DC;
+      --terre: #2B1C16;
+      --terre-mid: #4A3228;
+      --terracotta: #C65332;
+      --magenta: #E01870;
+      --magenta-soft: #FF4D9A;
+      --ink: #1E140F;
+      --muted: #7A6256;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: var(--terre);
+      color: var(--creme);
+      overflow-x: hidden;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    #world {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+      cursor: grab;
+    }
+    #world:active { cursor: grabbing; }
+
+    .ui {
+      position: relative;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .ui a, .ui button { pointer-events: auto; }
+
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      z-index: 20;
+      pointer-events: none;
+    }
+    .brand {
+      font-family: "Syne", sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+      pointer-events: auto;
+      color: var(--creme);
+      text-decoration: none;
+    }
+    .lang {
+      pointer-events: auto;
+      border: 1px solid rgba(243, 233, 220, 0.35);
+      background: rgba(43, 28, 22, 0.45);
+      color: var(--creme);
+      border-radius: 999px;
+      padding: 0.45rem 0.8rem;
+      font: inherit;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-panel {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 5.5rem 1.25rem 1.5rem;
+    }
+    .glass {
+      width: min(560px, 100%);
+      background: rgba(43, 28, 22, 0.62);
+      border: 1px solid rgba(224, 24, 112, 0.35);
+      border-radius: 28px;
+      padding: 1.4rem 1.3rem 1.5rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+      pointer-events: auto;
+    }
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--magenta-soft);
+      margin-bottom: 0.85rem;
+      font-weight: 600;
+    }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--magenta);
+      box-shadow: 0 0 0 6px rgba(224, 24, 112, 0.2);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      50% { box-shadow: 0 0 0 10px rgba(224, 24, 112, 0); }
+    }
+    h1 {
+      font-family: "Syne", sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.5rem, 9vw, 4.4rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin-bottom: 0.9rem;
+    }
+    h1 span { color: var(--magenta-soft); }
+    .lead {
+      font-size: 0.98rem;
+      line-height: 1.6;
+      color: rgba(243, 233, 220, 0.82);
+      margin-bottom: 1.15rem;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 1.15rem;
+      flex-wrap: wrap;
+    }
+    .photo-slot {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px solid var(--magenta);
+      background: var(--terre-mid);
+      flex-shrink: 0;
+      position: relative;
+    }
+    .photo-slot img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .photo-slot .fallback {
+      position: absolute; inset: 0; display: none; place-items: center;
+      font-size: 0.5rem; letter-spacing: 0.06em; text-transform: uppercase;
+      text-align: center; padding: 0.3rem; color: rgba(243,233,220,0.7);
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .chip {
+      font-size: 0.7rem;
+      padding: 0.35rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(198, 83, 50, 0.3);
+      border: 1px solid rgba(198, 83, 50, 0.55);
+      color: var(--creme);
+    }
+    .chip.hot {
+      background: var(--magenta);
+      border-color: var(--magenta);
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 0.8rem 1.15rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.88rem;
+    }
+    .btn-main {
+      background: var(--magenta);
+      color: white;
+    }
+    .btn-side {
+      background: transparent;
+      color: var(--creme);
+      border: 1.5px solid rgba(243, 233, 220, 0.4);
+    }
+    .hint {
+      margin-top: 0.9rem;
+      font-size: 0.78rem;
+      color: rgba(243, 233, 220, 0.55);
+    }
+    .hint kbd {
+      font: inherit;
+      border: 1px solid rgba(243,233,220,0.25);
+      border-radius: 6px;
+      padding: 0.1rem 0.35rem;
+      margin: 0 0.15rem;
+    }
+
+    .about {
+      position: relative;
+      z-index: 10;
+      margin-top: 0;
+      padding: 1rem 1.25rem 4rem;
+      background: linear-gradient(180deg, transparent, rgba(43, 28, 22, 0.92) 12%, #241711 100%);
+      pointer-events: none;
+    }
+    .about-grid {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 1rem;
+      pointer-events: auto;
+    }
+    .panel {
+      background: rgba(243, 233, 220, 0.06);
+      border: 1px solid rgba(243, 233, 220, 0.12);
+      border-radius: 24px;
+      padding: 1.5rem 1.25rem;
+      backdrop-filter: blur(10px);
+    }
+    .panel h2 {
+      font-family: "Syne", sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      letter-spacing: -0.03em;
+      margin: 0.4rem 0 1rem;
+      line-height: 1.05;
+    }
+    .panel .label {
+      color: var(--magenta-soft);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .panel p {
+      color: rgba(243, 233, 220, 0.78);
+      line-height: 1.7;
+      margin-bottom: 0.9rem;
+      font-size: 0.98rem;
+    }
+    .quote {
+      margin-top: 1.2rem;
+      padding-top: 1.1rem;
+      border-top: 1px solid rgba(224, 24, 112, 0.35);
+      font-size: 1.2rem;
+      font-style: italic;
+      line-height: 1.4;
+      color: var(--creme);
+    }
+    .board {
+      display: grid;
+      gap: 0.75rem;
+    }
+    .tile {
+      border-radius: 18px;
+      padding: 1.1rem 1rem;
+      background: linear-gradient(135deg, rgba(224,24,112,0.28), rgba(198,83,50,0.22));
+      border: 1px solid rgba(224, 24, 112, 0.35);
+      transition: transform 0.25s ease;
+    }
+    .tile:hover { transform: translateY(-3px) scale(1.01); }
+    .tile strong {
+      display: block;
+      font-family: "Syne", sans-serif;
+      font-size: 1.15rem;
+      margin-bottom: 0.25rem;
+    }
+    .tile span {
+      font-size: 0.86rem;
+      color: rgba(243, 233, 220, 0.75);
+      line-height: 1.45;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    .stat {
+      border-radius: 18px;
+      padding: 1rem;
+      background: rgba(243, 233, 220, 0.08);
+      border: 1px solid rgba(243, 233, 220, 0.12);
+    }
+    .stat b {
+      display: block;
+      font-family: "Syne", sans-serif;
+      font-size: 1.5rem;
+      color: var(--magenta-soft);
+      margin-bottom: 0.2rem;
+    }
+    .stat span { font-size: 0.85rem; color: rgba(243,233,220,0.7); }
+
+    @media (min-width: 800px) {
+      .topbar { padding: 1.25rem 2rem; }
+      .hero-panel { padding: 6rem 2rem 2rem; }
+      .glass { padding: 1.75rem 1.7rem; }
+      .about { padding: 2rem 2rem 5rem; }
+      .about-grid { grid-template-columns: 1.3fr 0.9fr; }
+      .stats { grid-template-columns: repeat(3, 1fr); }
+      .panel { padding: 2rem; }
+    }
+
+    .preview-tag {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 50;
+      background: var(--magenta);
+      color: white;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.55rem 0.8rem;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-tag">Direction B · Playground</div>
+  <canvas id="world" aria-label="Monde 3D interactif à explorer"></canvas>
+
+  <div class="topbar">
+    <a class="brand" href="#">Lory Doamba</a>
+    <button class="lang" type="button">FR / EN</button>
+  </div>
+
+  <div class="ui">
+    <section class="hero-panel">
+      <div class="glass">
+        <p class="kicker"><span class="dot" aria-hidden="true"></span> Ingénieure Data &amp; IA · Formatrice Tech</p>
+        <h1>Lory <span>Doamba</span></h1>
+        <p class="lead">
+          Je conçois des produits web, mobiles et IA fiables, et je forme celles et ceux qui bâtiront la tech africaine de demain.
+        </p>
+        <div class="row">
+          <div class="photo-slot" aria-label="Emplacement photo">
+            <img src="../public/images/profile.png" alt="Portrait de Lory Doamba" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';" />
+            <div class="fallback">Photo</div>
+          </div>
+          <div class="chips">
+            <span class="chip hot">Lead TOW &amp; Geeks Out</span>
+            <span class="chip">Féministe radicale</span>
+            <span class="chip">Développement des femmes</span>
+          </div>
+        </div>
+        <div class="actions">
+          <a class="btn btn-main" href="#about">Voir mes projets</a>
+          <a class="btn btn-side" href="#">Télécharger mon CV</a>
+        </div>
+        <p class="hint">Glisser pour explorer · Molette pour zoomer · <kbd>←</kbd><kbd>→</kbd> sur mobile : balayer</p>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <div class="about-grid">
+        <article class="panel">
+          <p class="label">À propos</p>
+          <h2>Une développeuse qui construit des mondes — tech, communautés, opportunités.</h2>
+          <p>
+            Je suis ingénieure Data &amp; IA, basée à Ouagadougou. Je combine génie logiciel, données et intelligence artificielle pour créer des solutions évolutives, orientées production et centrées sur les utilisateurs. LLMs, RAG, agents IA et automatisation intelligente sont au cœur de mon travail.
+          </p>
+          <p>
+            Je suis aussi formatrice, fondatrice de Tech Opportunities Worldwide et de Geeks Out.
+          </p>
+          <p>
+            Je suis féministe radicale : je crois que la technologie ne changera rien si les femmes n'y ont pas la place, la formation et le pouvoir de décision. Chaque communauté que je construis part de cette conviction.
+          </p>
+          <p class="quote">« La technologie n'a de sens que si elle ouvre des portes à celles qui en étaient exclues. »</p>
+        </article>
+        <div>
+          <div class="board">
+            <div class="tile">
+              <strong>TOW</strong>
+              <span>Communauté 2 000+ membres : bourses, stages, fellowships.</span>
+            </div>
+            <div class="tile">
+              <strong>Geeks Out</strong>
+              <span>1re édition Burkina · Ouagadougou · 30 mai 2026.</span>
+            </div>
+            <div class="tile">
+              <strong>MentorhIA</strong>
+              <span>Mentorat IA pour les jeunes femmes de la tech en Afrique de l'Ouest.</span>
+            </div>
+          </div>
+          <div class="stats" style="margin-top:0.75rem">
+            <div class="stat"><b>2 000+</b><span>membres TOW</span></div>
+            <div class="stat"><b>RAG</b><span>agents · LLMs</span></div>
+            <div class="stat"><b>2026</b><span>Geeks Out BF</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
+  <script type="module">
+    import * as THREE from "three";
+
+    const canvas = document.getElementById("world");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setClearColor(0x2b1c16, 1);
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x2b1c16, 8, 28);
+
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+    camera.position.set(0, 4.2, 10);
+
+    const hemi = new THREE.HemisphereLight(0xf3e9dc, 0x3a2218, 1.1);
+    scene.add(hemi);
+    const sun = new THREE.DirectionalLight(0xffb199, 1.3);
+    sun.position.set(6, 10, 4);
+    scene.add(sun);
+    const accent = new THREE.PointLight(0xe01870, 2.2, 18);
+    accent.position.set(-2, 3, 2);
+    scene.add(accent);
+
+    // Ground
+    const ground = new THREE.Mesh(
+      new THREE.CircleGeometry(16, 64),
+      new THREE.MeshStandardMaterial({ color: 0x3a281f, roughness: 0.95, metalness: 0.05 })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    scene.add(ground);
+
+    // Grid ring
+    const ring = new THREE.Mesh(
+      new THREE.RingGeometry(5.5, 5.65, 64),
+      new THREE.MeshBasicMaterial({ color: 0xe01870, side: THREE.DoubleSide, transparent: true, opacity: 0.55 })
+    );
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 0.02;
+    scene.add(ring);
+
+    function makeLabelSprite(text, color = "#F3E9DC") {
+      const c = document.createElement("canvas");
+      c.width = 512; c.height = 128;
+      const ctx = c.getContext("2d");
+      ctx.clearRect(0, 0, 512, 128);
+      ctx.fillStyle = "rgba(43,28,22,0.75)";
+      roundRect(ctx, 24, 28, 464, 72, 28);
+      ctx.fill();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 4;
+      roundRect(ctx, 24, 28, 464, 72, 28);
+      ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.font = "700 42px Syne, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(text, 256, 66);
+      const tex = new THREE.CanvasTexture(c);
+      const mat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+      const sprite = new THREE.Sprite(mat);
+      sprite.scale.set(3.2, 0.8, 1);
+      return sprite;
+    }
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    const islands = [
+      { name: "TOW", color: 0xe01870, x: -3.2, z: -1.2, h: 1.4 },
+      { name: "Geeks Out", color: 0xc65332, x: 2.8, z: -2.0, h: 1.8 },
+      { name: "IA & Data", color: 0xd47858, x: 0.2, z: 2.6, h: 1.1 },
+      { name: "MentorhIA", color: 0xff4d9a, x: -1.8, z: 3.4, h: 0.9 },
+    ];
+
+    const floaters = [];
+    islands.forEach((isle) => {
+      const group = new THREE.Group();
+      group.position.set(isle.x, 0, isle.z);
+
+      const base = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.1, 1.25, 0.35, 6),
+        new THREE.MeshStandardMaterial({ color: 0x4a3228, roughness: 0.7 })
+      );
+      base.position.y = 0.18;
+      group.add(base);
+
+      const tower = new THREE.Mesh(
+        new THREE.BoxGeometry(0.9, isle.h, 0.9),
+        new THREE.MeshStandardMaterial({ color: isle.color, metalness: 0.25, roughness: 0.35 })
+      );
+      tower.position.y = 0.35 + isle.h / 2;
+      tower.rotation.y = Math.PI / 8;
+      group.add(tower);
+
+      const orb = new THREE.Mesh(
+        new THREE.SphereGeometry(0.22, 24, 24),
+        new THREE.MeshStandardMaterial({ color: 0xf3e9dc, emissive: isle.color, emissiveIntensity: 0.35 })
+      );
+      orb.position.y = 0.45 + isle.h + 0.35;
+      group.add(orb);
+
+      const label = makeLabelSprite(isle.name, "#FF4D9A");
+      label.position.y = orb.position.y + 0.7;
+      group.add(label);
+
+      scene.add(group);
+      floaters.push({ group, orb, baseY: 0 });
+    });
+
+    // Central sculpture
+    const core = new THREE.Mesh(
+      new THREE.TorusKnotGeometry(0.7, 0.22, 120, 16),
+      new THREE.MeshStandardMaterial({ color: 0xe01870, metalness: 0.45, roughness: 0.25 })
+    );
+    core.position.set(0, 1.5, 0);
+    scene.add(core);
+
+    // Particles
+    const pCount = 180;
+    const pGeo = new THREE.BufferGeometry();
+    const pPos = new Float32Array(pCount * 3);
+    for (let i = 0; i < pCount; i++) {
+      pPos[i * 3] = (Math.random() - 0.5) * 18;
+      pPos[i * 3 + 1] = Math.random() * 6 + 0.5;
+      pPos[i * 3 + 2] = (Math.random() - 0.5) * 18;
+    }
+    pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
+    const points = new THREE.Points(
+      pGeo,
+      new THREE.PointsMaterial({ color: 0xff4d9a, size: 0.05, transparent: true, opacity: 0.7 })
+    );
+    scene.add(points);
+
+    // Controls
+    let targetAngle = 0.55;
+    let angle = 0.55;
+    let targetRadius = 11;
+    let radius = 11;
+    let targetLift = 4.2;
+    let lift = 4.2;
+    let dragging = false;
+    let lastX = 0;
+
+    function resize() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    canvas.addEventListener("pointerdown", (e) => {
+      dragging = true;
+      lastX = e.clientX;
+      canvas.setPointerCapture(e.pointerId);
+    });
+    canvas.addEventListener("pointerup", () => { dragging = false; });
+    canvas.addEventListener("pointermove", (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - lastX;
+      lastX = e.clientX;
+      targetAngle -= dx * 0.005;
+    });
+    canvas.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      targetRadius = THREE.MathUtils.clamp(targetRadius + e.deltaY * 0.01, 6.5, 16);
+    }, { passive: false });
+
+    let t = 0;
+    function tick() {
+      t += reduce ? 0 : 0.01;
+      angle += (targetAngle - angle) * 0.08;
+      radius += (targetRadius - radius) * 0.08;
+      lift += (targetLift - lift) * 0.08;
+
+      camera.position.x = Math.sin(angle) * radius;
+      camera.position.z = Math.cos(angle) * radius;
+      camera.position.y = lift;
+      camera.lookAt(0, 1.1, 0);
+
+      core.rotation.x = t * 0.4;
+      core.rotation.y = t * 0.55;
+      core.position.y = 1.5 + Math.sin(t) * 0.15;
+
+      floaters.forEach((f, i) => {
+        f.group.position.y = Math.sin(t * 1.1 + i) * 0.12;
+        f.orb.position.y = f.orb.position.y; // stable relative
+        f.group.rotation.y = Math.sin(t * 0.3 + i) * 0.08;
+      });
+
+      points.rotation.y = t * 0.05;
+      ring.rotation.z = t * 0.15;
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    tick();
+  </script>
+</body>
+</html>

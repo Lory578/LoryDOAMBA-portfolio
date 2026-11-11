@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Direction C — Digital Muse | Lory Doamba</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,600;0,6..96,700;1,6..96,500;1,6..96,600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --creme: #FAF4EC;
+      --creme-paper: #FFFDF9;
+      --terre: #2F211B;
+      --terre-soft: #5A4338;
+      --terracotta: #B84B32;
+      --magenta: #C9166A;
+      --magenta-bright: #E83A86;
+      --ink: #241812;
+      --muted: #6F594E;
+      --line: rgba(47, 33, 27, 0.14);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      background: var(--creme);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.95rem 1.25rem;
+      background: rgba(250, 244, 236, 0.86);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-brand {
+      font-family: "Bodoni Moda", serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--terre);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-center {
+      display: none;
+      gap: 1.35rem;
+      list-style: none;
+    }
+    .nav-center a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 500;
+    }
+    .nav-right { display: flex; align-items: center; gap: 0.65rem; }
+    .nav-lang {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--terre-soft);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .nav-cta {
+      text-decoration: none;
+      background: var(--magenta);
+      color: white;
+      padding: 0.65rem 1rem;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+    @media (min-width: 900px) {
+      .nav { padding: 1.1rem 3rem; }
+      .nav-center { display: flex; }
+    }
+
+    .hero {
+      position: relative;
+      min-height: calc(100svh - 64px);
+      display: grid;
+      isolation: isolate;
+      overflow: hidden;
+    }
+    #muse-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.95;
+    }
+    .hero-frame {
+      width: min(1240px, 100%);
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 3rem;
+      display: grid;
+      gap: 2rem;
+      align-items: end;
+    }
+    .editorial-mark {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .photo-slot {
+      width: 64px;
+      height: 80px;
+      border-radius: 40% 40% 36% 36% / 28% 28% 48% 48%;
+      overflow: hidden;
+      border: 1.5px solid var(--magenta);
+      background: #e8d9cb;
+      flex-shrink: 0;
+      position: relative;
+      box-shadow: 8px 10px 0 rgba(201, 22, 106, 0.15);
+    }
+    .photo-slot img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .photo-slot .fallback {
+      position: absolute; inset: 0; display: none; place-items: center;
+      font-size: 0.52rem; letter-spacing: 0.08em; text-transform: uppercase;
+      text-align: center; color: var(--muted); padding: 0.35rem;
+    }
+    .mark-text {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--magenta);
+      font-weight: 600;
+      line-height: 1.5;
+    }
+    .display {
+      font-family: "Bodoni Moda", serif;
+      font-weight: 600;
+      font-size: clamp(3.6rem, 13vw, 8.4rem);
+      line-height: 0.88;
+      letter-spacing: -0.035em;
+      color: var(--terre);
+      margin-bottom: 1.4rem;
+    }
+    .display i {
+      font-style: italic;
+      color: var(--magenta);
+      font-weight: 500;
+    }
+    .hero-bottom {
+      display: grid;
+      gap: 1.5rem;
+    }
+    .lead {
+      font-size: clamp(1.02rem, 2.2vw, 1.2rem);
+      line-height: 1.65;
+      color: var(--muted);
+      font-weight: 400;
+      max-width: 34rem;
+    }
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .badge {
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(201, 22, 106, 0.3);
+      color: var(--terre-soft);
+      background: rgba(255, 253, 249, 0.65);
+    }
+    .badge.hot {
+      background: var(--magenta);
+      color: white;
+      border-color: var(--magenta);
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      padding: 0.9rem 1.3rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: transform 0.25s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-fill {
+      background: var(--terre);
+      color: var(--creme);
+    }
+    .btn-fill:hover { background: var(--magenta); }
+    .btn-line {
+      border: 1.5px solid rgba(47, 33, 27, 0.28);
+      color: var(--terre);
+      background: transparent;
+    }
+    .rail {
+      display: grid;
+      gap: 0.85rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--line);
+    }
+    .rail-item strong {
+      display: block;
+      font-family: "Bodoni Moda", serif;
+      font-size: 1.55rem;
+      color: var(--terracotta);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .rail-item span {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    @media (min-width: 760px) {
+      .rail { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    }
+    @media (min-width: 1024px) {
+      .hero-frame {
+        grid-template-columns: 1.25fr 0.75fr;
+        min-height: calc(100svh - 72px);
+        padding: 3.5rem 3rem 4rem;
+        align-items: center;
+      }
+      .hero-bottom {
+        align-self: end;
+        padding-bottom: 0.5rem;
+      }
+    }
+
+    /* ABOUT — magazine spread */
+    .about {
+      background: var(--creme-paper);
+      border-top: 1px solid var(--line);
+      padding: 4rem 1.25rem 5rem;
+    }
+    .about-wrap {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 2.5rem;
+    }
+    .about-head {
+      display: grid;
+      gap: 0.75rem;
+      max-width: 40rem;
+    }
+    .eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--magenta);
+      font-weight: 700;
+    }
+    .about-head h2 {
+      font-family: "Bodoni Moda", serif;
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      color: var(--terre);
+      font-weight: 600;
+    }
+    .spread {
+      display: grid;
+      gap: 1.5rem;
+    }
+    .col-text p {
+      font-size: 1.02rem;
+      line-height: 1.8;
+      color: var(--muted);
+      margin-bottom: 1.05rem;
+      font-weight: 400;
+    }
+    .pullquote {
+      margin: 1.75rem 0;
+      padding: 1.5rem 0 1.5rem 1.25rem;
+      border-left: 3px solid var(--magenta);
+      font-family: "Bodoni Moda", serif;
+      font-style: italic;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      line-height: 1.3;
+      color: var(--terre);
+    }
+    .stack {
+      display: grid;
+      gap: 0.85rem;
+    }
+    .card {
+      padding: 1.35rem 1.25rem;
+      border-radius: 4px;
+      background: var(--creme);
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+    .card:hover {
+      border-color: rgba(201, 22, 106, 0.45);
+      transform: translateY(-2px);
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: var(--magenta);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.3s ease;
+    }
+    .card:hover::before { transform: scaleY(1); }
+    .card h3 {
+      font-family: "Bodoni Moda", serif;
+      font-size: 1.45rem;
+      margin-bottom: 0.35rem;
+      color: var(--terre);
+    }
+    .card p {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: var(--muted);
+      margin: 0;
+    }
+    .card.terracotta { background: linear-gradient(160deg, #f7ebe3, #f3ddd2); }
+    .card.magenta-soft { background: linear-gradient(160deg, #fce8f1, #f8d5e5); }
+    @media (min-width: 900px) {
+      .about { padding: 5.5rem 3rem 6.5rem; }
+      .spread { grid-template-columns: 1.2fr 0.8fr; gap: 3rem; align-items: start; }
+    }
+
+    .preview-tag {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 50;
+      background: var(--terre);
+      color: var(--creme);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.55rem 0.8rem;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-tag">Direction C · Digital Muse</div>
+
+  <nav class="nav" aria-label="Principale">
+    <a class="nav-brand" href="#">Lory Doamba</a>
+    <ul class="nav-center">
+      <li><a href="#about">À propos</a></li>
+      <li><a href="#">Expertise</a></li>
+      <li><a href="#">Impact</a></li>
+      <li><a href="#">Projets</a></li>
+      <li><a href="#">Publications</a></li>
+      <li><a href="#">Blog</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nav-lang" type="button">FR · EN</button>
+      <a class="nav-cta" href="#">Me contacter</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <canvas id="muse-canvas" aria-hidden="true"></canvas>
+    <div class="hero-frame">
+      <div>
+        <div class="editorial-mark">
+          <div class="photo-slot" aria-label="Emplacement photo">
+            <img src="../public/images/profile.png" alt="Portrait de Lory Doamba" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';" />
+            <div class="fallback">Photo</div>
+          </div>
+          <p class="mark-text">Ingénieure Data &amp; IA<br />Formatrice Tech · Ouagadougou</p>
+        </div>
+        <h1 class="display">Lory<br /><i>Doamba</i></h1>
+        <p class="lead">
+          Je conçois des produits web, mobiles et IA fiables, et je forme celles et ceux qui bâtiront la tech africaine de demain.
+        </p>
+      </div>
+      <div class="hero-bottom">
+        <div class="badges">
+          <span class="badge hot">Lead TOW &amp; Geeks Out</span>
+          <span class="badge">Féministe radicale</span>
+          <span class="badge">Développement des femmes</span>
+        </div>
+        <div class="actions">
+          <a class="btn btn-fill" href="#">Voir mes projets</a>
+          <a class="btn btn-line" href="#">Télécharger mon CV</a>
+        </div>
+        <div class="rail">
+          <div class="rail-item">
+            <strong>2 000+</strong>
+            <span>membres dans la communauté TOW</span>
+          </div>
+          <div class="rail-item">
+            <strong>30.05.26</strong>
+            <span>Geeks Out Burkina · Ouagadougou</span>
+          </div>
+          <div class="rail-item">
+            <strong>IA</strong>
+            <span>RAG · agents · LLMs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="about" id="about">
+    <div class="about-wrap">
+      <div class="about-head">
+        <p class="eyebrow">À propos</p>
+        <h2>La tech comme levier. Les femmes au centre.</h2>
+      </div>
+      <div class="spread">
+        <div class="col-text">
+          <p>
+            Je suis ingénieure Data &amp; IA, basée à Ouagadougou. Je combine génie logiciel, données et intelligence artificielle pour créer des solutions évolutives, orientées production et centrées sur les utilisateurs. LLMs, RAG, agents IA et automatisation intelligente sont au cœur de mon travail.
+          </p>
+          <p>
+            Je suis aussi formatrice, fondatrice de Tech Opportunities Worldwide et de Geeks Out.
+          </p>
+          <p>
+            Je suis féministe radicale : je crois que la technologie ne changera rien si les femmes n'y ont pas la place, la formation et le pouvoir de décision. Chaque communauté que je construis part de cette conviction.
+          </p>
+          <blockquote class="pullquote">
+            « La technologie n'a de sens que si elle ouvre des portes à celles qui en étaient exclues. »
+          </blockquote>
+        </div>
+        <div class="stack">
+          <article class="card">
+            <h3>IA &amp; Data</h3>
+            <p>LLMs, RAG, systèmes multi-agents, LangGraph, Python, FastAPI — orientés production.</p>
+          </article>
+          <article class="card terracotta">
+            <h3>Développement</h3>
+            <p>React, Next.js, Node.js, React Native, TypeScript, Django, PostgreSQL, Docker, CI/CD.</p>
+          </article>
+          <article class="card magenta-soft">
+            <h3>Impact</h3>
+            <p>TOW (2 000+), Geeks Out Burkina, MentorhIA, formations pour le secteur public.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
+  <script type="module">
+    import * as THREE from "three";
+
+    const canvas = document.getElementById("muse-canvas");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 50);
+    camera.position.set(0, 0, 6.5);
+
+    scene.add(new THREE.AmbientLight(0xfaf4ec, 0.7));
+    const key = new THREE.DirectionalLight(0xffffff, 1.1);
+    key.position.set(2, 3, 4);
+    scene.add(key);
+    const rim = new THREE.DirectionalLight(0xc9166a, 0.9);
+    rim.position.set(-3, -1, 2);
+    scene.add(rim);
+
+    // Soft ribbon / muse forms
+    const ribbonMat = new THREE.MeshStandardMaterial({
+      color: 0xc9166a,
+      metalness: 0.35,
+      roughness: 0.3,
+      transparent: true,
+      opacity: 0.78,
+      side: THREE.DoubleSide,
+    });
+    const clayMat = new THREE.MeshStandardMaterial({
+      color: 0xb84b32,
+      metalness: 0.15,
+      roughness: 0.45,
+      transparent: true,
+      opacity: 0.7,
+    });
+    const creamMat = new THREE.MeshStandardMaterial({
+      color: 0xf0e0d0,
+      metalness: 0.05,
+      roughness: 0.6,
+      transparent: true,
+      opacity: 0.55,
+    });
+
+    const ribbon = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.18, 24, 100), ribbonMat);
+    ribbon.position.set(1.8, 0.2, -0.5);
+    ribbon.rotation.x = 0.7;
+    ribbon.rotation.y = -0.4;
+    scene.add(ribbon);
+
+    const petal = new THREE.Mesh(new THREE.SphereGeometry(0.85, 48, 48, 0, Math.PI * 2, 0, Math.PI * 0.65), clayMat);
+    petal.position.set(2.4, -0.6, 0.2);
+    petal.scale.set(1.3, 0.55, 1);
+    scene.add(petal);
+
+    const disk = new THREE.Mesh(new THREE.CircleGeometry(1.1, 64), creamMat);
+    disk.position.set(1.2, 1.0, -1.2);
+    disk.rotation.y = 0.5;
+    scene.add(disk);
+
+    const sparkGeo = new THREE.BufferGeometry();
+    const sparkCount = 60;
+    const sparkPos = new Float32Array(sparkCount * 3);
+    for (let i = 0; i < sparkCount; i++) {
+      sparkPos[i * 3] = (Math.random() - 0.2) * 5;
+      sparkPos[i * 3 + 1] = (Math.random() - 0.5) * 4;
+      sparkPos[i * 3 + 2] = (Math.random() - 0.5) * 2;
+    }
+    sparkGeo.setAttribute("position", new THREE.BufferAttribute(sparkPos, 3));
+    const sparks = new THREE.Points(
+      sparkGeo,
+      new THREE.PointsMaterial({ color: 0xe83a86, size: 0.035, transparent: true, opacity: 0.85 })
+    );
+    scene.add(sparks);
+
+    function resize() {
+      const parent = canvas.parentElement;
+      const w = parent.clientWidth;
+      const h = parent.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      const mobile = w < 900;
+      ribbon.position.x = mobile ? 0.3 : 1.8;
+      petal.position.x = mobile ? 0.8 : 2.4;
+      disk.position.x = mobile ? 0.1 : 1.2;
+      ribbon.visible = !mobile || w > 420;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    let mx = 0, my = 0;
+    window.addEventListener("pointermove", (e) => {
+      mx = (e.clientX / innerWidth - 0.5) * 0.6;
+      my = (e.clientY / innerHeight - 0.5) * 0.35;
+    });
+
+    let t = 0;
+    function tick() {
+      t += reduce ? 0 : 0.008;
+      ribbon.rotation.z = t * 0.35;
+      ribbon.rotation.x = 0.7 + Math.sin(t * 0.7) * 0.15;
+      petal.rotation.z = Math.sin(t * 0.5) * 0.2;
+      petal.position.y = -0.6 + Math.sin(t) * 0.1;
+      disk.rotation.z = -t * 0.2;
+      sparks.rotation.y = t * 0.08;
+
+      camera.position.x += (mx - camera.position.x) * 0.05;
+      camera.position.y += (-my - camera.position.y) * 0.05;
+      camera.lookAt(0.8, 0, 0);
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    tick();
+  </script>
+</body>
+</html>

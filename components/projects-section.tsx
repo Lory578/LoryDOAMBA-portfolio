@@ -1,107 +1,109 @@
 "use client"
 
 import { useInView } from "@/hooks/use-in-view"
-import { Card } from "@/components/ui/card"
-import { ExternalLink } from "lucide-react"
+import { useLanguage } from "@/lib/language-provider"
+import type { PublicProject } from "@/lib/public-content"
+import { MagneticCard } from "@/components/magnetic-card"
+import { SectionAtmosphere } from "@/components/section-atmosphere"
 
-const projects = [
-  {
-    title: "Application mobile de localisation",
-    description: "Application de localisation et notation des services essentiels pour la ville de Ouagadougou",
-    tags: ["React Native", "Expo", "OSM", "OSRM", "DOCKER"],
-    period: "2025",
-  },
-  {
-    title: "Sites web vitrines",
-    description: "Formation en Conception et développement de sites web modernes et responsives",
-    tags: ["Next.js", "Tailwind CSS","React.js"],
-    period: "2025",
-  },
-  {
-    title: "MVP d'Application mobile de suivi du rythme cardiaque STOMP",
-    description: "Conception de la partie frontend d'une application mobile Android/ios pour suivre le rythme cardiaque des athletes",
-    tags: ["React Native", "Expo"],
-    period: "2025",
-  },
-  {
-    title: "Marketing Digital sur les reseaux",
-    description: "Consultation et stratégies de marketing digital pour individuel et petites entreprises",
-    tags: ["Strategy", "Content", "Analytics"],
-    period: "Ongoing- En cours",
-  },
-  {
-    title: "ERP simplifié pour la couture — SaaS mobile Android",
-    description: "Développement d'un ERP simplifié dédié au métier de la couture, sous forme de SaaS mobile Android. Déjà adopté par Warma Couture depuis janvier 2026, bientôt disponible sur le Play Store.",
-    tags: ["React Native", "Android", "SaaS", "ERP", "Play Store"],
-    period: "2026 — En cours",
-  },
-]
-
-const achievements = [
-  "Lauréate internationale Raise your Hack - LabLab AI",
-  "Lauréate Hackathon C2i 2023",
-  "Certificate en Journalisme numérique - Africa Women in Media",
-  "Data Manager - Dakar Institute of Technology",
-]
-
-export function ProjectsSection() {
+export function ProjectsSection({ projects = [] }: { projects?: PublicProject[] }) {
   const [ref, isInView] = useInView({ threshold: 0.1 })
+  const { t, language } = useLanguage()
+
+  const managedProjects =
+    projects.length > 0
+      ? projects.map(
+          (project) =>
+            [
+              language === "en" && project.title_en ? project.title_en : project.title_fr,
+              language === "en" && project.description_en ? project.description_en : project.description_fr,
+              project.tags,
+              project.group_name,
+            ] as const,
+        )
+      : t.projects.items.map(
+          ([title, description, tags], index) =>
+            [title, description, tags, index < 2 ? "ai" : "product"] as const,
+        )
+
+  const aiProjects = managedProjects.filter((project) => project[3] === "ai")
+  const productProjects = managedProjects.filter((project) => project[3] !== "ai")
 
   return (
-    <section id="projects" ref={ref} className="py-20 md:py-32 bg-card/30">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="projects" ref={ref} className="section-shell bg-[var(--paper)]">
+      <SectionAtmosphere variant="violet" />
+      <div className="section-frame">
         <div
-          className={`transition-all duration-1000 ${
-            isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          className={`transition-all duration-700 ${
+            isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
         >
-          <div className="max-w-3xl mb-16">
-            <h2 className="font-serif text-3xl md:text-5xl font-bold text-secondary mb-6">Projets & Réalisations</h2>
-            <p className="text-lg text-foreground/70">
-              Une sélection de mes projets et accomplissements dans le domaine de la tech et du digital.
-            </p>
+          <div className="section-heading">
+            <p className="section-index">04 / {t.projects.title}</p>
+            <div>
+              <p className="section-kicker">{t.projects.title}</p>
+              <h2 className="section-title">{t.projects.subtitle}</h2>
+            </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-16">
-            {projects.map((project, index) => (
-              <Card
-                key={index}
-                className={`bg-card border-border p-6 hover:border-primary/50 transition-all duration-300 group ${
-                  isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                }`}
-                style={{ transitionDelay: `${index * 100}ms` }}
+          <h3 className="mb-5 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+            {t.projects.aiTitle}
+          </h3>
+          <div className="mb-16 grid gap-4 md:grid-cols-2">
+            {aiProjects.map(([title, description, tags], index) => (
+              <MagneticCard
+                key={title}
+                className={`relative overflow-hidden border border-[var(--line)] p-7 transition-transform duration-300 hover:-translate-y-1 md:p-9 ${index === 0 ? "bg-secondary md:col-span-2" : "bg-[var(--creme)]"}`}
               >
-                <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-semibold text-xl text-secondary group-hover:text-primary transition-colors">
-                    {project.title}
-                  </h3>
-                  <ExternalLink className="w-5 h-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-                <p className="text-foreground/70 mb-4">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {project.tags.map((tag, idx) => (
-                    <span key={idx} className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary">
+                {index === 0 && <span className="absolute -right-4 -top-10 font-serif text-[12rem] leading-none text-white/[0.05]">IA</span>}
+                <h3 className={`relative font-serif text-2xl ${index === 0 ? "text-[var(--creme)]" : "text-secondary"}`}>{title}</h3>
+                <p className={`relative mt-3 text-sm leading-relaxed ${index === 0 ? "text-[var(--creme)]/70" : "text-muted-foreground"}`}>{description}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+                    >
                       {tag}
                     </span>
                   ))}
                 </div>
-                <p className="text-sm text-accent">{project.period}</p>
-              </Card>
+              </MagneticCard>
             ))}
           </div>
 
-          {/* Achievements */}
-          <Card className="bg-card border-border p-8">
-            <h3 className="font-serif text-2xl font-bold text-secondary mb-6">Certifications & Récompenses</h3>
-            <ul className="space-y-3">
-              {achievements.map((achievement, index) => (
-                <li key={index} className="flex items-start gap-3 text-foreground/70">
-                  <span className="text-accent text-xl">✦</span>
-                  <span>{achievement}</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
+          <h3 className="mb-5 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+            {t.projects.productTitle}
+          </h3>
+          <div className="grid gap-8 border-t border-[var(--line)] pt-8 md:grid-cols-3">
+            {productProjects.map(([title, description, tags]) => (
+              <MagneticCard key={title} className="border-b border-[var(--line)] pb-8">
+                <h3 className="font-serif text-xl text-secondary">{title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{description}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </MagneticCard>
+            ))}
+          </div>
+
+          <div className="mt-16 border-l-2 border-primary bg-[var(--creme)] px-6 py-7 md:px-9">
+            <h3 className="font-serif text-2xl text-secondary">
+              {language === "fr" ? "Certifications & distinctions" : "Certifications & distinctions"}
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Raise your Hack (LabLab AI) · Hackathon C2i 2023 · Africa Women in Media · Data Manager ·
+              Développement Frontend · Youth Shaping Global Development · Programme WICE · Fondements du
+              Leadership
+            </p>
+          </div>
         </div>
       </div>
     </section>
