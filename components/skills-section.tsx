@@ -1,50 +1,84 @@
 "use client"
 
 import { useInView } from "@/hooks/use-in-view"
-import { useLanguage } from "@/lib/language-provider"
-import { MagneticCard } from "@/components/magnetic-card"
-import { SectionAtmosphere } from "@/components/section-atmosphere"
+import { Card } from "@/components/ui/card"
+
+const skillCategories = [
+  {
+    title: "Development",
+    skills: [
+      "React & Next.js",
+      "React Native",
+      "Node.js & Express",
+      "Python & Django",
+      "HTML/CSS/JavaScript",
+      "TypeScript",
+    ],
+  },
+  {
+    title: "Tools & Platforms",
+    skills: ["MySQL & PostgreSQL", "Prisma & Sequelize", "Docker & Nginx", "Git & GitHub", "Postman", "Tailwind CSS"],
+  },
+  {
+    title: "Design & Marketing",
+    skills: [
+      "UI/UX Design",
+      "Canva & Webflow",
+      "Digital Marketing",
+      "Content Strategy",
+      "Community Building",
+      "Brand Development",
+    ],
+  },
+  {
+    title: "Data & AI",
+    skills: ["Data Analysis", "Web Scraping", "Big Data", "AI Integration", "Apache NiFi", "Data Modeling"],
+  },
+]
 
 export function SkillsSection() {
   const [ref, isInView] = useInView({ threshold: 0.1 })
-  const { t } = useLanguage()
 
   return (
-    <section id="skills" ref={ref} className="section-shell">
-      <SectionAtmosphere variant="rose" />
-      <div className="section-frame">
+    <section id="skills" ref={ref} className="py-20 md:py-32">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div
-          className={`transition-all duration-700 ${
-            isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          className={`transition-all duration-1000 ${
+            isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <div className="section-heading">
-            <p className="section-index">02 / {t.skills.title}</p>
-            <div>
-              <p className="section-kicker">{t.skills.title}</p>
-              <h2 className="section-title">{t.skills.subtitle}</h2>
-            </div>
+          <div className="max-w-3xl mb-16">
+            <h2 className="font-serif text-3xl md:text-5xl font-bold text-secondary mb-6">Compétences</h2>
+            <p className="text-lg text-foreground/70">
+              Un ensemble de compétences diversifiées alliant technique, créativité et stratégie digitale.
+            </p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            {t.skills.categories.map(([title, skills], index) => (
-              <MagneticCard
-                key={title}
-                className={`group relative min-h-[285px] overflow-hidden p-7 transition-transform duration-300 hover:-translate-y-2 md:p-8 ${
-                  index === 0 ? "bg-secondary text-[var(--creme)]" : index === 1 ? "bg-[#f1dfd4]" : "bg-[#f8dce8]"
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {skillCategories.map((category, index) => (
+              <Card
+                key={index}
+                className={`bg-card border-border p-6 hover:border-secondary/50 transition-all duration-300 ${
+                  isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
                 }`}
-                style={{ transitionDelay: `${index * 80}ms` }}
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <span className="absolute -right-3 -top-5 font-serif text-[9rem] leading-none text-primary/10">0{index + 1}</span>
-                <p className={`relative mb-16 text-sm font-semibold ${index === 0 ? "text-[var(--magenta-bright)]" : "text-primary"}`}>0{index + 1}</p>
-                <h3 className={`relative font-serif text-2xl ${index === 0 ? "text-[var(--creme)]" : "text-secondary"}`}>{title}</h3>
-                <p className={`relative mt-4 text-sm leading-7 ${index === 0 ? "text-[var(--creme)]/70" : "text-muted-foreground"}`}>{skills}</p>
-              </MagneticCard>
+                <h3 className="font-semibold text-lg text-primary mb-4 pb-2 border-b border-border">
+                  {category.title}
+                </h3>
+                <ul className="space-y-2">
+                  {category.skills.map((skill, idx) => (
+                    <li
+                      key={idx}
+                      className="text-sm text-foreground/70 hover:text-secondary transition-colors cursor-default"
+                    >
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+              </Card>
             ))}
           </div>
-          <p className="mt-8 text-center text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            {t.skills.tools}
-          </p>
         </div>
       </div>
     </section>

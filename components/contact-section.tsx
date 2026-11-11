@@ -1,34 +1,41 @@
 "use client"
 
 import { useInView } from "@/hooks/use-in-view"
+import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Facebook, Linkedin, Mail, Music2, Phone, Youtube } from "lucide-react"
+import { Mail, Phone, Linkedin, Facebook, Youtube, Music2 } from "lucide-react"
 import { useLanguage } from "@/lib/language-provider"
-import { MagneticCard } from "@/components/magnetic-card"
-import { SectionAtmosphere } from "@/components/section-atmosphere"
 
 const contactMethods = [
   {
     icon: Mail,
     label: "Email",
-    value: "[À CONFIRMER : lorydoamba02@gmail.com ou lydoamba02@gmail.com]",
-    href: "mailto:lorydoamba02@gmail.com",
+    value: "lydoamba02@gmail.com",
+    href: "mailto:lydoamba02@gmail.com",
   },
   {
     icon: Phone,
     label: "WhatsApp",
-    value: "[À CONFIRMER]",
-    href: "#contact",
+    value: "+226 02 10 83 04",
+    href: "https://wa.me/22602108304",
   },
 ]
 
 const socialLinks = [
-  { icon: Music2, label: "TikTok", href: "https://www.tiktok.com/@lorydoamba" },
-  { icon: Youtube, label: "YouTube", href: "https://www.youtube.com/@MissEasyTech" },
+  {
+    icon: Music2,
+    label: "TikTok",
+    href: "https://www.tiktok.com/@miss_easytech?_r=1&_t=ZM-92IlIEeCoOK",
+  },
+  {
+    icon: Youtube,
+    label: "YouTube",
+    href: "https://www.youtube.com/@MissEasyTech",
+  },
   {
     icon: Linkedin,
     label: "LinkedIn",
-    href: "https://www.linkedin.com/in/lory-doamba-ab567b277/",
+    href: "http://linkedin.com/in/lory-doamba-miss-easytech-ab567b277",
   },
   {
     icon: Facebook,
@@ -38,82 +45,89 @@ const socialLinks = [
 ]
 
 export function ContactSection() {
-  const [ref, isInView] = useInView({ threshold: 0.15 })
+  const [ref, isInView] = useInView({ threshold: 0.2 })
   const { t, language } = useLanguage()
 
   return (
-    <section id="contact" ref={ref} className="section-shell bg-secondary text-[var(--creme)]">
-      <SectionAtmosphere variant="contact" />
-      <div className="section-frame">
+    <section id="contact" ref={ref} className="py-20 md:py-32">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div
-          className={`mx-auto max-w-3xl transition-all duration-700 ${
-            isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          className={`max-w-4xl mx-auto transition-all duration-1000 ${
+            isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <div className="section-heading">
-            <p className="section-index text-[var(--magenta-bright)]">07 / Contact</p>
-            <div>
-              <p className="section-kicker text-[var(--magenta-bright)]">Contact</p>
-              <h2 className="section-title text-[var(--creme)]">{t.contact.title}</h2>
-              <p className="section-intro text-[var(--creme)]/70">{t.contact.subtitle}</p>
-            </div>
+          <div className="text-center mb-12">
+            <h2 className="font-serif text-3xl md:text-5xl font-bold text-secondary mb-6">{t.contact.title}</h2>
+            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">{t.contact.subtitle}</p>
           </div>
 
-          <div className="grid gap-10 border-y border-white/15 py-8 md:grid-cols-[1.2fr_0.8fr] md:py-12">
-            <div className="grid gap-4">
-              {contactMethods.map((method) => (
-                <MagneticCard
-                  key={method.label}
-                  className="flex items-start gap-4 rounded-sm border border-white/10 p-4 transition-colors hover:border-primary/60"
+          <Card className="bg-card border-border p-8 md:p-12 mb-8 hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              {contactMethods.map((method, index) => (
+                <a
+                  key={index}
+                  href={method.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-4 rounded-lg border border-border hover:border-primary/50 transition-all group hover:scale-105"
                 >
-                  <a href={method.href} className="flex w-full items-start gap-4">
-                    <div className="rounded-lg bg-primary/15 p-3">
-                      <method.icon className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-[var(--creme)]/55">{method.label}</p>
-                      <p className="mt-1 text-sm font-medium text-[var(--creme)]">{method.value}</p>
-                    </div>
-                  </a>
-                </MagneticCard>
+                  <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                    <method.icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">{method.label}</p>
+                    <p className="text-foreground font-medium">{method.value}</p>
+                  </div>
+                </a>
               ))}
             </div>
 
-            <div className="flex flex-col justify-end border-l border-white/15 pl-6 md:pl-10">
-              <p className="mb-4 text-center text-sm text-[var(--creme)]/55">
+            <div className="pt-8 border-t border-border">
+              <p className="text-sm text-muted-foreground mb-4 text-center">
                 {language === "fr" ? "Suivez-moi sur les réseaux sociaux" : "Follow me on social media"}
               </p>
-              <div className="flex justify-center gap-3">
-                {socialLinks.map((social) => (
+              <div className="flex justify-center gap-4">
+                {socialLinks.map((social, index) => (
                   <Button
-                    key={social.label}
+                    key={index}
                     variant="outline"
                     size="icon"
                     asChild
-                    className="border-white/20 bg-transparent text-[var(--creme)] hover:border-primary hover:bg-primary hover:text-white"
+                    className="border-border hover:border-secondary hover:bg-secondary hover:text-secondary-foreground transition-all bg-transparent hover:scale-110"
                   >
                     <a href={social.href} target="_blank" rel="noopener noreferrer" aria-label={social.label}>
-                      <social.icon className="h-5 w-5" />
+                      <social.icon className="w-5 h-5" />
                     </a>
                   </Button>
                 ))}
               </div>
-              <p className="mt-3 text-center text-xs text-[var(--creme)]/45">
-                LinkedIn : [À CONFIRMER — l&apos;URL du site et celle du profil peuvent différer]
-              </p>
             </div>
-          </div>
+          </Card>
 
-          <p className="mt-8 text-center text-sm text-accent">{t.contact.availability}</p>
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">Ouagadougou, Burkina Faso 🇧🇫</p>
+            <p className="text-sm text-accent mt-2">
+              {language === "fr"
+                ? "Disponible pour des projets et collaborations internationales"
+                : "Available for international projects and collaborations"}
+            </p>
+          </div>
         </div>
       </div>
 
-      <footer className="mt-16 border-t border-white/10 pt-8">
-        <div className="mx-auto max-w-[1180px] px-5 text-center text-sm text-[var(--creme)]/50 sm:px-8 lg:px-12">
-          <p>{t.footer.rights}</p>
-          <p className="mt-2">
-            <span className="text-[var(--creme)]/80">{t.footer.secondary}</span> · {t.footer.place}
-          </p>
+      {/* Footer */}
+      <footer className="mt-20 pt-8 border-t border-border">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center text-sm text-muted-foreground">
+            <p>
+              © {new Date().getFullYear()} Miss EasyTech.{" "}
+              {language === "fr" ? "Tous droits réservés" : "All rights reserved"}.
+            </p>
+            <p className="mt-2">
+              {language === "fr" ? "Développé par" : "Developed by"}{" "}
+              <span className="text-secondary font-medium">Lory Doamba</span>
+            </p>
+          </div>
         </div>
       </footer>
     </section>

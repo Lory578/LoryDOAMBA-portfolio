@@ -1,0 +1,8 @@
+{
+  "name": "Miss EasyTech Portfolio",
+  "description": "Portfolio of Miss EasyTech (Lory Doamba) - Web & Mobile Developer, Digital Marketing Consultant, and Tech Mentor based in Burkina Faso",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
